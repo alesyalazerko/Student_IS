@@ -20,7 +20,7 @@ class Students(db.Model):
     status = db.Column(db.String(10), nullable=False, default='Paid')
 
 class User(UserMixin, db.Model):
-    id = db.column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(128))
     password_hash = db.Column(db.String(128))
