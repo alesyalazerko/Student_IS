@@ -1,8 +1,14 @@
 from flask import render_template, redirect, url_for
 from app import app, db, login
-from forms import StudentForm, SubjectForm, LoginForm
+from forms import StudentForm, SubjectForm, LoginForm, RegisterForm
 from models import Subjects, Students, User
-from flask_login import current_user, login_user
+from flask_login import current_user, login_user, logout_user, login_required
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
 
 @login.user_loader
 def load_user(id):
@@ -14,6 +20,7 @@ def index():
 
 
 @app.route('/add-student', methods=['GET', 'POST'])
+@login_required
 def add_student():
     form = StudentForm()
     form.subject.choices = [(subject.id, subject.name) for subject in Subjects.query.order_by(Subjects.name).all()]  # SELECT * FROM subjects ORDER BY name
@@ -110,3 +117,18 @@ def login():
         login_user(user, remember=form.remember_me.data)
         return redirect(url_for('index'))
     return render_template('login.html', form=form)
+
+
+@app.route('/register', methods = ['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = RegisterForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data,
+                    email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        return redirect(url_for('login'))
+    return render_template('register.html', form=form)
