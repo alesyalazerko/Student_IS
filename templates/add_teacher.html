@@ -1,0 +1,39 @@
+{% extends 'base.html'%}
+
+{% block content %}
+        <h1 class="text-center">Add teacher</h1>
+    <form action="" method="post">
+    {{ form.hidden_tag() }}
+        <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.subject.label(class="form-label") }}
+            {{ form.subject(class="form-select" }}
+        </div>
+        <div class="mb-3">
+            {{ form.submit(class="btn btn-outline-primary") }}
+        </div>
+    </form>
+
+    <hr>
+
+    {% if items|length > 0 %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for subj in items %}
+                    <tr>
+                        <td>{{ subj.name }}</td>
+                        <td><a href="/delete-subj/{{ subj.id }}" class="btn btn-outline-danger">Delete</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}
